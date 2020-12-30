@@ -1,0 +1,81 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@ernestzeng 
+Learn Git and GitHub without any code!
+Using the Hello World guide, you’ll start a branch, write comments, and open a pull request.
+
+
+ernestzeng
+/
+JD_Sign_Action
+forked from ZHDeveloper/JD_Sign_Action
+0
+11.6k
+Code
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+JD_Sign_Action JD_Sign_Action #2
+Summary
+Workflow file
+Jobs
+build
+Workflow file for this run
+.github/workflows/work.yaml at d47d7fd
+name: JD_Sign_Action
+
+on:
+  repository_dispatch:
+  release:
+    types: published
+  # push:
+  #   branches:
+  #     - master
+  schedule:
+    - cron: 12 20 * * *
+  watch:
+    types: started
+    
+env:
+  JD_COOKIE: ${{ secrets.JD_COOKIE }}
+  JD_DUAL_COOKIE: ${{ secrets.JD_DUAL_COOKIE }}
+  PUSH_KEY: ${{ secrets.PUSH_KEY }}
+  UPLOAD_BESULT_DIR: true
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout codes
+              uses: actions/checkout@v2
+              
+            - name: Use Node.js
+              uses: actions/setup-node@v1
+              with:
+                node-version: '12.x'
+                
+            - name: Run install
+              run: npm install
+              
+            - name: Run Script
+              run: node jd_sign.js
+                
+            - name: Upload result file
+              uses: actions/upload-artifact@master
+              if: env.UPLOAD_BESULT_DIR == 'true'
+              with:
+                name: result
+                path: ./*.txt
+
+
